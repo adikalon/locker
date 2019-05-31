@@ -122,7 +122,7 @@ class Locker
             }
         }
 
-        unset($path, $file, $exception, $pid, $name);
+        unset($path, $file, $exception, $pid, $name, $signal);
     }
 
     /**

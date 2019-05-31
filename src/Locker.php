@@ -36,6 +36,7 @@ class Locker
      * скрипта
      * @param bool $pid (optional) Записывать id процесса в lock-файл (только
      * для unix-подобных ОС)
+     * @param bool $signal (optional) Обрабатывать сигналы - да/нет, true/false
      * @return void
      * @throws Exception
      */
@@ -43,7 +44,8 @@ class Locker
         ?string $path = null,
         ?string $file = null,
         bool $exception = false,
-        bool $pid = true
+        bool $pid = true,
+        bool $signal = false
     ): void
     {
         $name = '';
@@ -112,11 +114,11 @@ class Locker
                     }
                 }
 
-                declare(ticks = 1);
-
-                pcntl_signal(SIGINT, [__CLASS__, 'remove']);
-                pcntl_signal(SIGQUIT, [__CLASS__, 'remove']);
-                pcntl_signal(SIGTSTP, [__CLASS__, 'remove']);
+                if ($signal) {
+                    pcntl_signal(SIGINT, [__CLASS__, 'remove']);
+                    pcntl_signal(SIGQUIT, [__CLASS__, 'remove']);
+                    pcntl_signal(SIGTSTP, [__CLASS__, 'remove']);
+                }
             }
         }
 
@@ -146,6 +148,8 @@ class Locker
         }
 
         unset($no, $info);
+
+        exit;
     }
 
     /**
